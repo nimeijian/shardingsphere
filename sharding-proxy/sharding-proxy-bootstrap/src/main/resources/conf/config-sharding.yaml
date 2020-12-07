@@ -1,131 +1,100 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+schemaName: fintax_task
 
-######################################################################################################
-# 
-# Here you can configure the rules for the proxy.
-# This example is configuration of sharding rule.
-#   
-# If you want to use sharding, please refer to this file; 
-# if you want to use master-slave, please refer to the config-master_slave.yaml.
-# if you want to use master-slave, please refer to the config-encrypt.yaml.
-# 
-######################################################################################################
-#
-#schemaName: sharding_db
-#
-#dataSources:
-#  ds_0:
-#    url: jdbc:postgresql://127.0.0.1:5432/demo_ds_0?serverTimezone=UTC&useSSL=false
-#    username: postgres
-#    password: postgres
-#    connectionTimeoutMilliseconds: 30000
-#    idleTimeoutMilliseconds: 60000
-#    maxLifetimeMilliseconds: 1800000
-#    maxPoolSize: 50
-#  ds_1:
-#    url: jdbc:postgresql://127.0.0.1:5432/demo_ds_1?serverTimezone=UTC&useSSL=false
-#    username: postgres
-#    password: postgres
-#    connectionTimeoutMilliseconds: 30000
-#    idleTimeoutMilliseconds: 60000
-#    maxLifetimeMilliseconds: 1800000
-#    maxPoolSize: 50
-#
-#shardingRule:
-#  tables:
-#    t_order:
-#      actualDataNodes: ds_${0..1}.t_order_${0..1}
-#      tableStrategy:
-#        inline:
-#          shardingColumn: order_id
-#          algorithmExpression: t_order_${order_id % 2}
-#      keyGenerator:
-#        type: SNOWFLAKE
-#        column: order_id
-#    t_order_item:
-#      actualDataNodes: ds_${0..1}.t_order_item_${0..1}
-#      tableStrategy:
-#        inline:
-#          shardingColumn: order_id
-#          algorithmExpression: t_order_item_${order_id % 2}
-#      keyGenerator:
-#        type: SNOWFLAKE
-#        column: order_item_id
-#  bindingTables:
-#    - t_order,t_order_item
-#  defaultDatabaseStrategy:
-#    inline:
-#      shardingColumn: user_id
-#      algorithmExpression: ds_${user_id % 2}
-#  defaultTableStrategy:
-#    none:
-#
-######################################################################################################
-#
-# If you want to connect to MySQL, you should manually copy MySQL driver to lib directory.
-#
-######################################################################################################
-
-#schemaName: sharding_db
-#
-#dataSources:
-#  ds_0:
-#    url: jdbc:mysql://127.0.0.1:3306/demo_ds_0?serverTimezone=UTC&useSSL=false
-#    username: root
-#    password:
-#    connectionTimeoutMilliseconds: 30000
-#    idleTimeoutMilliseconds: 60000
-#    maxLifetimeMilliseconds: 1800000
-#    maxPoolSize: 50
-#  ds_1:
-#    url: jdbc:mysql://127.0.0.1:3306/demo_ds_1?serverTimezone=UTC&useSSL=false
-#    username: root
-#    password:
-#    connectionTimeoutMilliseconds: 30000
-#    idleTimeoutMilliseconds: 60000
-#    maxLifetimeMilliseconds: 1800000
-#    maxPoolSize: 50
-#
-#shardingRule:
-#  tables:
-#    t_order:
-#      actualDataNodes: ds_${0..1}.t_order_${0..1}
-#      tableStrategy:
-#        inline:
-#          shardingColumn: order_id
-#          algorithmExpression: t_order_${order_id % 2}
-#      keyGenerator:
-#        type: SNOWFLAKE
-#        column: order_id
-#    t_order_item:
-#      actualDataNodes: ds_${0..1}.t_order_item_${0..1}
-#      tableStrategy:
-#        inline:
-#          shardingColumn: order_id
-#          algorithmExpression: t_order_item_${order_id % 2}
-#      keyGenerator:
-#        type: SNOWFLAKE
-#        column: order_item_id
-#  bindingTables:
-#    - t_order,t_order_item
-#  defaultDatabaseStrategy:
-#    inline:
-#      shardingColumn: user_id
-#      algorithmExpression: ds_${user_id % 2}
-#  defaultTableStrategy:
-#    none:
+dataSources:
+  ds_0:
+    url: jdbc:mysql://172.23.60.12:5688/fintax_task_0?serverTimezone=UTC&useSSL=false
+    username: root
+    password: root123456
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+  ds_1:
+    url: jdbc:mysql://172.23.60.12:5688/fintax_task_1?serverTimezone=UTC&useSSL=false
+    username: root
+    password: root123456
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+  ds_2:
+    url: jdbc:mysql://172.23.60.12:5688/fintax_task_2?serverTimezone=UTC&useSSL=false
+    username: root
+    password: root123456
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+  ds_3:
+    url: jdbc:mysql://172.23.60.12:5688/fintax_task_3?serverTimezone=UTC&useSSL=false
+    username: root
+    password: root123456
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+  ds_4:
+    url: jdbc:mysql://172.23.60.12:5688/fintax_task_4?serverTimezone=UTC&useSSL=false
+    username: root
+    password: root123456
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+  ds_5:
+    url: jdbc:mysql://172.23.60.12:5688/fintax_task_5?serverTimezone=UTC&useSSL=false
+    username: root
+    password: root123456
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+  ds_6:
+    url: jdbc:mysql://172.23.60.12:5688/fintax_task_6?serverTimezone=UTC&useSSL=false
+    username: root
+    password: root123456
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+  ds_7:
+    url: jdbc:mysql://172.23.60.12:5688/fintax_task_7?serverTimezone=UTC&useSSL=false
+    username: root
+    password: root123456
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+shardingRule:
+  tables:
+    task_master:
+      actualDataNodes: ds_${0..7}.task_master_${0..15}
+      tableStrategy:
+        inline:
+          shardingColumn: qy_id
+          algorithmExpression: task_master_${((qy_id >>> 3) ^ (qy_id >>> 35)) & 15}
+    task_data_extra:
+      actualDataNodes: ds_${0..7}.task_data_extra_${0..15}
+      tableStrategy:
+        inline:
+          shardingColumn: qy_id
+          algorithmExpression: task_data_extra_${((qy_id >>> 3) ^ (qy_id >>> 35)) & 15}
+    task_image:
+      actualDataNodes: ds_${0..7}.task_image_${0..15}
+      tableStrategy:
+        inline:
+          shardingColumn: qy_id
+          algorithmExpression: task_image_${((qy_id >>> 3) ^ (qy_id >>> 35)) & 15}
+    task_url:
+      actualDataNodes: ds_${0..7}.task_url_${0..15}
+      tableStrategy:
+        inline:
+          shardingColumn: qy_id
+          algorithmExpression: task_url_${((qy_id >>> 3) ^ (qy_id >>> 35)) & 15}
+  defaultDatabaseStrategy:
+    inline:
+      shardingColumn: qy_id
+      algorithmExpression: ds_${(qy_id ^ (qy_id >>> 32)) & 7}
+  defaultTableStrategy:
+    none:
+  defaultDataSourceName: ds_0

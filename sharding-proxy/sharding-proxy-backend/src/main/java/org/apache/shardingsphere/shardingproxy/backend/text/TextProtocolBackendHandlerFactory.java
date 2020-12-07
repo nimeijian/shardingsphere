@@ -21,6 +21,10 @@ import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.shardingproxy.backend.communication.jdbc.connection.BackendConnection;
+import org.apache.shardingsphere.shardingproxy.backend.exception.ReadOnlyException;
+import org.apache.shardingsphere.shardingproxy.backend.response.BackendResponse;
+import org.apache.shardingsphere.shardingproxy.backend.response.error.ErrorResponse;
+import org.apache.shardingsphere.shardingproxy.backend.response.query.QueryData;
 import org.apache.shardingsphere.shardingproxy.backend.text.admin.BroadcastBackendHandler;
 import org.apache.shardingsphere.shardingproxy.backend.text.admin.ShowDatabasesBackendHandler;
 import org.apache.shardingsphere.shardingproxy.backend.text.admin.UnicastBackendHandler;
@@ -30,6 +34,7 @@ import org.apache.shardingsphere.shardingproxy.backend.text.sctl.ShardingCTLBack
 import org.apache.shardingsphere.shardingproxy.backend.text.sctl.utils.SCTLUtils;
 import org.apache.shardingsphere.shardingproxy.backend.text.transaction.SkipBackendHandler;
 import org.apache.shardingsphere.shardingproxy.backend.text.transaction.TransactionBackendHandler;
+import org.apache.shardingsphere.shardingproxy.context.ShardingProxyContext;
 import org.apache.shardingsphere.spi.database.type.DatabaseType;
 import org.apache.shardingsphere.sql.parser.SQLParserEngine;
 import org.apache.shardingsphere.sql.parser.sql.statement.SQLStatement;
@@ -37,6 +42,7 @@ import org.apache.shardingsphere.sql.parser.sql.statement.dal.DALStatement;
 import org.apache.shardingsphere.sql.parser.sql.statement.dal.SetStatement;
 import org.apache.shardingsphere.sql.parser.sql.statement.dal.dialect.mysql.ShowDatabasesStatement;
 import org.apache.shardingsphere.sql.parser.sql.statement.dal.dialect.mysql.UseStatement;
+import org.apache.shardingsphere.sql.parser.sql.statement.dml.SelectStatement;
 import org.apache.shardingsphere.sql.parser.sql.statement.tcl.BeginTransactionStatement;
 import org.apache.shardingsphere.sql.parser.sql.statement.tcl.CommitStatement;
 import org.apache.shardingsphere.sql.parser.sql.statement.tcl.RollbackStatement;
@@ -44,12 +50,14 @@ import org.apache.shardingsphere.sql.parser.sql.statement.tcl.SetAutoCommitState
 import org.apache.shardingsphere.sql.parser.sql.statement.tcl.TCLStatement;
 import org.apache.shardingsphere.transaction.core.TransactionOperationType;
 
+import java.sql.SQLException;
+
 /**
  * Text protocol backend handler factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TextProtocolBackendHandlerFactory {
-    
+
     /**
      * Create new instance of text protocol backend handler.
      *
@@ -67,6 +75,25 @@ public final class TextProtocolBackendHandlerFactory {
             return ShardingCTLBackendHandlerFactory.newInstance(trimSql, backendConnection);
         }
         SQLStatement sqlStatement = new SQLParserEngine(databaseType.getName()).parse(sql, false);
+
+        // 判断当前用户是否只读
+        if (!(sqlStatement instanceof SelectStatement || sqlStatement instanceof DALStatement)
+                && ShardingProxyContext.getInstance().getAuthentication().getUsers().get(backendConnection.getUserName()).getReadOnly()){
+            return new TextProtocolBackendHandler(){
+                public BackendResponse execute() {
+                    return new ErrorResponse(new ReadOnlyException());
+                }
+
+                public boolean next() throws SQLException {
+                    return false;
+                }
+
+                public QueryData getQueryData() throws SQLException {
+                    return null;
+                }
+            };
+        }
+
         if (sqlStatement instanceof TCLStatement) {
             return createTCLBackendHandler(sql, (TCLStatement) sqlStatement, backendConnection);
         }
@@ -75,7 +102,7 @@ public final class TextProtocolBackendHandlerFactory {
         }
         return new QueryBackendHandler(sql, backendConnection);
     }
-    
+
     private static TextProtocolBackendHandler createTCLBackendHandler(final String sql, final TCLStatement tclStatement, final BackendConnection backendConnection) {
         if (tclStatement instanceof BeginTransactionStatement) {
             return new TransactionBackendHandler(TransactionOperationType.BEGIN, backendConnection);
@@ -94,7 +121,7 @@ public final class TextProtocolBackendHandlerFactory {
         }
         return new BroadcastBackendHandler(sql, backendConnection);
     }
-    
+
     private static TextProtocolBackendHandler createDALBackendHandler(final DALStatement dalStatement, final String sql, final BackendConnection backendConnection) {
         if (dalStatement instanceof UseStatement) {
             return new UseDatabaseBackendHandler((UseStatement) dalStatement, backendConnection);

@@ -27,8 +27,10 @@ import org.apache.shardingsphere.underlying.common.yaml.config.YamlConfiguration
 @Getter
 @Setter
 public final class YamlProxyUserConfiguration implements YamlConfiguration {
-    
+
     private String password;
-    
+
     private String authorizedSchemas;
+
+    private Boolean readOnly = Boolean.FALSE;
 }

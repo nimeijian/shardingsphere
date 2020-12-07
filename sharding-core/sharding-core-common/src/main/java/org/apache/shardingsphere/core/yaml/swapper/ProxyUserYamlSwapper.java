@@ -30,21 +30,22 @@ import java.util.Collections;
  * Proxy user YAML swapper.
  */
 public final class ProxyUserYamlSwapper implements YamlSwapper<YamlProxyUserConfiguration, ProxyUser> {
-    
+
     @Override
     public YamlProxyUserConfiguration swap(final ProxyUser data) {
         YamlProxyUserConfiguration result = new YamlProxyUserConfiguration();
         result.setPassword(data.getPassword());
         String authorizedSchemas = null == data.getAuthorizedSchemas() ? "" : Joiner.on(',').join(data.getAuthorizedSchemas());
         result.setAuthorizedSchemas(authorizedSchemas);
+        result.setReadOnly(data.getReadOnly());
         return result;
     }
-    
+
     @Override
     public ProxyUser swap(final YamlProxyUserConfiguration yamlConfiguration) {
         if (Strings.isNullOrEmpty(yamlConfiguration.getAuthorizedSchemas())) {
-            return new ProxyUser(yamlConfiguration.getPassword(), Collections.emptyList());
+            return new ProxyUser(yamlConfiguration.getPassword(), Collections.emptyList(), yamlConfiguration.getReadOnly());
         }
-        return new ProxyUser(yamlConfiguration.getPassword(), Splitter.on(',').trimResults().splitToList(yamlConfiguration.getAuthorizedSchemas()));
+        return new ProxyUser(yamlConfiguration.getPassword(), Splitter.on(',').trimResults().splitToList(yamlConfiguration.getAuthorizedSchemas()), yamlConfiguration.getReadOnly());
     }
 }

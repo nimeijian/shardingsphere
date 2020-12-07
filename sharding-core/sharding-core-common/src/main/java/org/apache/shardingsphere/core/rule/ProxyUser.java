@@ -17,19 +17,27 @@
 
 package org.apache.shardingsphere.core.rule;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 
 /**
  * Proxy user.
  */
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Getter
+@AllArgsConstructor
 public final class ProxyUser {
-    
+
     private final String password;
-    
+
     private final Collection<String> authorizedSchemas;
+
+    private Boolean readOnly = Boolean.FALSE;
+
+    public ProxyUser(String password, Collection<String> authorizedSchemas){
+        this.password = password;
+        this.authorizedSchemas = authorizedSchemas;
+    }
 }
