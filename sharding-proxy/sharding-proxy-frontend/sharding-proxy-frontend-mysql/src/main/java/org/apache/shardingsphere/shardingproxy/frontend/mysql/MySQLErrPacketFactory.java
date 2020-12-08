@@ -23,7 +23,7 @@ import org.apache.shardingsphere.database.protocol.error.CommonErrorCode;
 import org.apache.shardingsphere.database.protocol.mysql.constant.MySQLServerErrorCode;
 import org.apache.shardingsphere.database.protocol.mysql.packet.generic.MySQLErrPacket;
 import org.apache.shardingsphere.shardingproxy.backend.exception.NoDatabaseSelectedException;
-import org.apache.shardingsphere.shardingproxy.backend.exception.ReadOnlyException;
+import org.apache.shardingsphere.shardingproxy.backend.exception.NoPrivilegeException;
 import org.apache.shardingsphere.shardingproxy.backend.exception.TableModifyInTransactionException;
 import org.apache.shardingsphere.shardingproxy.backend.exception.UnknownDatabaseException;
 import org.apache.shardingsphere.shardingproxy.backend.text.sctl.ShardingCTLErrorCode;
@@ -63,8 +63,8 @@ public final class MySQLErrPacketFactory {
         if (cause instanceof NoDatabaseSelectedException) {
             return new MySQLErrPacket(sequenceId, MySQLServerErrorCode.ER_NO_DB_ERROR);
         }
-        if (cause instanceof ReadOnlyException) {
-            return new MySQLErrPacket(sequenceId, MySQLServerErrorCode.ER_READ_ONLY_ERROR);
+        if (cause instanceof NoPrivilegeException) {
+            return new MySQLErrPacket(sequenceId, MySQLServerErrorCode.ER_NO_PRIVILEGE_ERROR);
         }
         return new MySQLErrPacket(sequenceId, CommonErrorCode.UNKNOWN_EXCEPTION, cause.getMessage());
     }

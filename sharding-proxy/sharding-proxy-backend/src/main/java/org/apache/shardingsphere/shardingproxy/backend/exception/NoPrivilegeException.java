@@ -18,11 +18,13 @@
 package org.apache.shardingsphere.shardingproxy.backend.exception;
 
 /**
- * 只读异常
+ * 没有权限异常
  */
 //@Getter
 //@RequiredArgsConstructor
-public final class ReadOnlyException extends BackendException {
+public final class NoPrivilegeException extends BackendException {
+//    private final String sql;
+
 //    private String command;
 //    private String username;
 //    private String address;

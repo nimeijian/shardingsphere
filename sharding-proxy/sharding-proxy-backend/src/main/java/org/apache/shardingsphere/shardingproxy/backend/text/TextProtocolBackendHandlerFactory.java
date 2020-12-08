@@ -20,8 +20,9 @@ package org.apache.shardingsphere.shardingproxy.backend.text;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.shardingproxy.backend.communication.jdbc.connection.BackendConnection;
-import org.apache.shardingsphere.shardingproxy.backend.exception.ReadOnlyException;
+import org.apache.shardingsphere.shardingproxy.backend.exception.NoPrivilegeException;
 import org.apache.shardingsphere.shardingproxy.backend.response.BackendResponse;
 import org.apache.shardingsphere.shardingproxy.backend.response.error.ErrorResponse;
 import org.apache.shardingsphere.shardingproxy.backend.response.query.QueryData;
@@ -55,6 +56,7 @@ import java.sql.SQLException;
 /**
  * Text protocol backend handler factory.
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TextProtocolBackendHandlerFactory {
 
@@ -77,11 +79,12 @@ public final class TextProtocolBackendHandlerFactory {
         SQLStatement sqlStatement = new SQLParserEngine(databaseType.getName()).parse(sql, false);
 
         // 判断当前用户是否只读
-        if (!(sqlStatement instanceof SelectStatement || sqlStatement instanceof DALStatement)
-                && ShardingProxyContext.getInstance().getAuthentication().getUsers().get(backendConnection.getUserName()).getReadOnly()){
+        if (ShardingProxyContext.getInstance().getAuthentication().getUsers().get(backendConnection.getUserName()).getReadOnly()
+                && !(sqlStatement instanceof SelectStatement || sqlStatement instanceof DALStatement)){
             return new TextProtocolBackendHandler(){
                 public BackendResponse execute() {
-                    return new ErrorResponse(new ReadOnlyException());
+                    log.info("You have no privilege to exec the sql:\n{}", sql);
+                    return new ErrorResponse(new NoPrivilegeException());
                 }
 
                 public boolean next() throws SQLException {

@@ -38,7 +38,7 @@ public enum MySQLServerErrorCode implements SQLErrorCode {
 
     ER_BAD_DB_ERROR(1049, "42000", "Unknown database '%s'"),
 
-    ER_READ_ONLY_ERROR(1142, "42000", "You only have read-only privilege"),
+    ER_NO_PRIVILEGE_ERROR(1142, "42000", "No privilege!"),
 
     ER_INTERNAL_ERROR(1815, "HY000", "Internal error: %s"),
 
