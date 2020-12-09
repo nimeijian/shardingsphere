@@ -80,7 +80,7 @@ public final class TextProtocolBackendHandlerFactory {
 
         // 判断当前用户是否只读
         if (ShardingProxyContext.getInstance().getAuthentication().getUsers().get(backendConnection.getUserName()).getReadOnly()
-                && !(sqlStatement instanceof SelectStatement || sqlStatement instanceof DALStatement)){
+                && !(sqlStatement instanceof SelectStatement || sqlStatement instanceof DALStatement || sqlStatement instanceof TCLStatement)){
             return new TextProtocolBackendHandler(){
                 public BackendResponse execute() {
                     log.info("You have no privilege to exec the sql:\n{}", sql);
